@@ -66,6 +66,7 @@ export default function CreateForm({ provider }: { provider?: string }) {
               className="pr-16"
               onEnter={handleGenerateForm}
             />
+            
             {!provider && (
               <div className="flex justify-center items-center mt-4">
                 <Badge variant='destructive' className="text-base font-medium">
