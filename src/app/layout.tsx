@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "@/components/ui/sonner";
-import { sfPro } from "./fonts";
+import { sfPro } from "./font";
 import DndProviderWrapper from "@/components/providers/dndProvider";
 import { FormProvider } from "@/context/form-context";
 import Script from "next/script";
