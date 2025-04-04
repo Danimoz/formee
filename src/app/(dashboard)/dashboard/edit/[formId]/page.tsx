@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
+
 import { auth } from "@/auth";
 import FormBuilder from "@/components/form/form-builder";
 import FormBuilderSkeleton from "@/components/form/form-builder-skeleton";
-import { Conversation } from "@/interfaces";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";

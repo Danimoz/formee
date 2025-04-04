@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { AIFormField } from "@/interfaces";
@@ -31,7 +32,6 @@ export default function FormField({
   register,
   errors,
   control,
-  setValue,
   isActive,
   onComplete,
 }: FormFieldProps) {

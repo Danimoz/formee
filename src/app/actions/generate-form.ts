@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 
 import {  AIFormSchema, LLMProvider } from "@/interfaces"
@@ -11,14 +13,17 @@ import { auth } from "@/auth"
 export async function generateForm(userPrompt: string, conversationId?: string) {
   const session = await auth()
   if (!session)  return { error: "User not authenticated" }
-
-  const { provider } = getLLMProviders(LLMProvider.OLLAMA)
-  const model = provider('deepseek-r1')
   
   try {
+    const user = await prisma.user.findUnique({
+      where: { email: session.user?.email as string },
+      include: { LLMProviderSettings: true }
+    })
+    const { provider, model: modelName  } = getLLMProviders(user?.LLMProviderSettings[0].providerName as LLMProvider, user?.LLMProviderSettings[0].LLMProviderKey, user?.LLMProviderSettings[0].modelName as string)
+
     if (!conversationId) {
       const { text } = await generateText({
-        model,
+        model: provider(modelName as string),
         prompt: `${systemPrompt} ${userPrompt}`,
       })
       const jsonData = extractJSON(text)
@@ -46,7 +51,7 @@ export async function generateForm(userPrompt: string, conversationId?: string) 
       const refinedSystemPrompt = `${systemConversationHistory} ${refinedPrompt}`
     
       const { text } = await generateText({
-        model,
+        model: provider(modelName as string),
         prompt: `${refinedSystemPrompt} ${userPrompt}`,
       })
       const jsonData = extractJSON(text)
@@ -65,8 +70,7 @@ export async function generateForm(userPrompt: string, conversationId?: string) 
     }
 
   } catch (error) {
-    console.error("Error generating form:", error)
-    return { error: "Failed to generate form" }
+    return { error: `Failed to generate form: ${error}` }
   }
 }
 
@@ -106,7 +110,7 @@ export async function saveForm(formData: AIFormSchema, conversationId: string) {
   }
 }
 
-export async function submitForm(formId: string, formData: any) {
+export async function submitForm(formId: string, formData: Record<string, any>) {
   try {
      await prisma.formResponse.create({
       data: {
@@ -118,5 +122,48 @@ export async function submitForm(formId: string, formData: any) {
   } catch (error) {
     console.error("Error submitting form:", error)
     return { error: "Failed to submit form" }
+  }
+}
+
+export async function saveUserSettings(values: {
+  llmProvider: string;
+  apiKey: string;
+  model: string;
+}){
+  const session = await auth()
+  if (!session) return { error: "User not authenticated" }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email: session?.user?.email as string },
+    })
+    if (!user) return { error: "User not found" }
+
+    const existingSetting = await prisma.lLMProviderSettings.findFirst({
+      where: { userEmail: session?.user?.email as string }
+    })
+    if (existingSetting) {
+      await prisma.lLMProviderSettings.update({
+        where: { id: existingSetting.id },
+        data: {
+          LLMProviderKey: values.apiKey,
+          modelName: values?.model,
+          providerName: values.llmProvider          
+        }
+      })
+      return { success: true, message: 'Successfully Updated' }
+    }
+    await prisma.lLMProviderSettings.create({
+      data: {
+        LLMProviderKey: values.apiKey,
+        modelName: values?.model,
+        providerName: values.llmProvider,
+        userEmail: session?.user?.email as string
+      }
+    })
+    return { success: true, message: 'Successfully Created' }
+  } catch (error) {
+    console.error("Error saving user settings:", error)
+    return { error: "Failed to save user settings" }
   }
 }

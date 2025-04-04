@@ -4,7 +4,7 @@ import { Edit, Eye, MessageSquareText, Save, Send } from "lucide-react"
 import { Button } from "../ui/button"
 import { AnimatePresence, motion } from "framer-motion"
 import FormEditMode from "./form-edit-mode"
-import { AIFormSchema, Conversation } from "@/interfaces"
+import { AIFormSchema } from "@/interfaces"
 import { useFormContext } from "@/context/form-context"
 import { useEffect, useState } from "react"
 import FormPreview from "./form-preview"
@@ -22,7 +22,7 @@ interface FormBuilderProps {
   formId?: string
 }
 
-export default function FormBuilder({ conversation, conversationId, formId }: FormBuilderProps) {
+export default function FormBuilder({ conversation, conversationId }: FormBuilderProps) {
   const {
     activeTab,
     setActiveTab,
@@ -166,7 +166,7 @@ export default function FormBuilder({ conversation, conversationId, formId }: Fo
       </div>
       
       {isRefining && <FormBuilderSkeleton />}
-      
+
       <AnimatePresence mode="wait">
         {activeTab === "edit" && (
           <motion.div

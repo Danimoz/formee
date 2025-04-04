@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useRef } from "react"
@@ -12,7 +13,6 @@ import { Select, SelectTrigger, SelectValue } from "../ui/select";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 import { AIFormField } from "@/interfaces";
-import { useFormContext } from "@/context/form-context";
 
 interface DraggableFieldTypeProps {
   type: string
@@ -56,7 +56,7 @@ function DraggableFieldType({ type, label, children }: DraggableFieldTypeProps) 
   )
 }
 
-function renderField(field: any) {
+function renderField(field: AIFormField) {
   switch (field?.type) {
     case 'text':
     case 'email':
@@ -75,7 +75,7 @@ function renderField(field: any) {
     case 'checkbox':
       <>
         {field.options && (
-          <RadioGroup disabled value={field.value}>
+          <RadioGroup disabled value={field.placeholder}>
             {field.options.map((option: any, index: number) => (
               <div key={option} className="flex items-center gap-2">
                 <RadioGroupItem id={`option-${field.id}-${index}`} value={option} disabled />

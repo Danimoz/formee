@@ -23,6 +23,7 @@ export async function POST(request: Request): Promise<Response> {
     });
     return Response.json(user, { status: 201 });
   } catch (err) {
+    console.error("Error creating user:", err);
     return Response.json({ error: true, errorMsg: 'An error Occured, Try again later' }, { status: 500 })
   }
 }

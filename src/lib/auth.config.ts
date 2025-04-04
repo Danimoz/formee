@@ -23,6 +23,7 @@ export default {
           const isValidPassword = await bcrypt.compare(credentials.password as string, user.password as string);
           return isValidPassword ? user : null;
         } catch (error) {
+          console.error("Error during authorization:", error);
           return null;
         }
       },

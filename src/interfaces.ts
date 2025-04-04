@@ -1,5 +1,5 @@
 export enum LLMProvider {
-  OPENAI = "OpenAi",
+  OPENAI = "OpenAI",
   ANTHROPIC = "Anthropic",
   OLLAMA = "Ollama",
 }

@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 py-4 border-b border-border/40 bg-white z-10">
+    <header className="w-full sticky top-0 py-4 border-b border-border/40 bg-white z-10">
       <div className="md:container mx-4 md:mx-auto flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold">Formee</h1>

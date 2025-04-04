@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { Button } from "@/components/ui/button"
@@ -55,7 +56,7 @@ export default function SignUpForm() {
 
       push('/login')
     } catch (err: any) {
-      toast.error(err.message || 'Signup failed')
+      toast.error(err?.message || 'Signup failed')
     } finally {
       setLoading(false)
     }
