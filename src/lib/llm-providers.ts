@@ -3,7 +3,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createAnthropic } from '@ai-sdk/anthropic'
 
-export function getLLMProviders(provider: LLMProvider, apiKey?: string, model?: string) {
+export function getLLMProviders(provider: LLMProvider, apiKey?: string, _model?: string) {
   switch (provider) {
     case LLMProvider.GOOGLE:
       const google = createGoogleGenerativeAI({
