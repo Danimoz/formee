@@ -36,7 +36,7 @@ export default function SettingsForm() {
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setIsLoading(true);
-    if (!formData.llmProvider || (formData.llmProvider !== LLMProvider.OLLAMA && !formData.apiKey) || (formData.llmProvider === LLMProvider.OLLAMA && !formData.model)) {
+    if (!formData.llmProvider) {
       toast.error('Select an option and API Key or Model')
       return
     }
@@ -68,20 +68,11 @@ export default function SettingsForm() {
           </SelectContent>
         </Select>
       </div>
-      
-      {formData.llmProvider !== LLMProvider.OLLAMA && (
-        <div className="w-full space-y-2">
-          <Label htmlFor="apiKey">API Key</Label>
-          <Input onChange={handleChange} name="apiKey" value={formData.apiKey} id="apiKey" placeholder="Enter your API key" />
-        </div>
-      )}
 
-      {formData.llmProvider === LLMProvider.OLLAMA && (
-        <div className="w-full space-y-2">
-          <Label htmlFor="model">Model</Label>
-          <Input onChange={handleChange} name="model" value={formData.model} id="model" placeholder="Enter the model name" />
-        </div>
-      )}
+      <div className="w-full space-y-2">
+        <Label htmlFor="apiKey">API Key</Label>
+        <Input onChange={handleChange} name="apiKey" value={formData.apiKey} id="apiKey" placeholder="Enter your API key" />
+      </div>
 
       <div>
         <Button type="submit" disabled={isLoading}>
