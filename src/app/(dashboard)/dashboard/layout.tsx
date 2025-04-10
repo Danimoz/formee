@@ -11,7 +11,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <SidebarTrigger />
           <Navbar />
         </div>
-        {children}
+        <div className="px-4 md:px-8 py-3 md:py-6">
+          {children}
+        </div>
       </main>
     </SidebarProvider>
   )

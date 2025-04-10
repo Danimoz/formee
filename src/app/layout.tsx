@@ -39,7 +39,7 @@ export default async function RootLayout({
             </FormProvider>
           </DndProviderWrapper>
         </SessionProvider>
-        <Toaster position="top-right" richColors />
+        <Toaster position="top-right" richColors closeButton />
       </body>
     </html>
   );

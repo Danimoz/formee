@@ -10,7 +10,7 @@ export default function Home() {
     <>
       <Navbar />
       <main>
-        <section className="md:container mx-4 md:mx-auto py-20">
+        <section className="md:container mx-4 md:mx-auto px-8 py-20">
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="space-y-6">
               <h1 className="text-4xl font-medium md:text-6xl">Create forms with just prompts</h1>
@@ -57,7 +57,7 @@ export default function Home() {
           </div>
         </section>
         <section className="py-20 bg-accent/30">
-          <div className="md:container mx-4 md:mx-auto">
+          <div className="md:container mx-4 md:mx-auto px-8">
             <div className="text-center mb-6">
               <h2 className="text-3xl font-bold md:text-4xl">Features</h2>
               <p className="text-muted-foreground text-lg leading-relaxed">

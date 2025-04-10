@@ -28,27 +28,24 @@ export function  extractJSON(responseText: string) {
 }
 
 export function getBaseUrl() {
-  // First check for Vercel specific environment variables
+  // Check if we have an explicit site URL set
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL;
+  }
+
+  // For Vercel production and preview deployments
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
   }
 
-  // For preview deployments
-  if (process.env.VERCEL_ENV === 'preview') {
+  // Additional check for NEXT_PUBLIC_VERCEL_URL
+  if (process.env.NEXT_PUBLIC_VERCEL_URL) {
     return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
   }
 
-  // For production deployments
-  if (process.env.VERCEL_ENV === 'production') {
-    // Use your custom domain if set
-    if (process.env.NEXT_PUBLIC_SITE_URL) {
-      return process.env.NEXT_PUBLIC_SITE_URL;
-    }
-    return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
-  }
-
-  // Fallback for development environment
-  return `http://localhost:${process.env.PORT || 3000}`;
+  return process.env.NODE_ENV === 'production'
+    ? process.env.NEXT_PUBLIC_SITE_URL
+    : `http://localhost:${process.env.PORT || 3000}`;
 }
 
 export function buildZodSchema(fields: AIFormField[]) {
