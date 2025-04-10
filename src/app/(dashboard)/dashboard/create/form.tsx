@@ -13,15 +13,16 @@ export default function CreateForm({ provider }: { provider?: string }) {
   const [prompt, setPrompt] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const { replace } = useRouter()
+  const { push, prefetch } = useRouter()
 
   async function handleGenerateForm() {
     if (!prompt.trim() || isLoading) return
     // Optimistically update the UI with user message
     setMessages((prev) => [...prev, { role: 'user', content: prompt }])
+    setIsLoading(true)
 
     try {
-      setIsLoading(true)
+      prefetch('/dashboard/edit/[id]')
       const schema = await generateForm(prompt)
       if (schema.error) {
         toast.error(schema.error)
@@ -29,7 +30,7 @@ export default function CreateForm({ provider }: { provider?: string }) {
         return
       }
       setPrompt('')
-      replace(`/dashboard/edit/${schema.conversationId}?create=true`)
+      push(`/dashboard/edit/${schema.conversationId}?create=true`)
     } catch (error) {
       // console.error(error)
       setMessages([])
