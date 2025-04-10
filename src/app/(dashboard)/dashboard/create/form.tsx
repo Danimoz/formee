@@ -30,7 +30,6 @@ export default function CreateForm({ provider }: { provider?: string }) {
       }
       setPrompt('')
       replace(`/dashboard/edit/${schema.conversationId}?create=true`)
-      console.log(schema)
     } catch (error) {
       // console.error(error)
       setMessages([])
