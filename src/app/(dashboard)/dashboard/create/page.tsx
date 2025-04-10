@@ -13,6 +13,6 @@ export default async function CreatePage(){
   })
 
   return (
-    <CreateForm provider={provider?.LLMProviderSettings[0].providerName} />
+    <CreateForm provider={provider?.LLMProviderSettings[0]?.providerName} />
   )
 }

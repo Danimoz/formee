@@ -19,8 +19,19 @@ export async function generateForm(userPrompt: string, conversationId?: string) 
       where: { email: session.user?.email as string },
       include: { LLMProviderSettings: true }
     })
-    const { provider, model: modelName  } = getLLMProviders(user?.LLMProviderSettings[0].providerName as LLMProvider, user?.LLMProviderSettings[0].LLMProviderKey, user?.LLMProviderSettings[0].modelName as string)
+    
+    let provider, modelName;
 
+    if (user?.LLMProviderSettings.length === 0) {
+      const result = getLLMProviders(LLMProvider.GOOGLE);
+      provider = result.provider;
+      modelName = result.model;
+    } else {
+      const result = getLLMProviders(user?.LLMProviderSettings[0].providerName as LLMProvider, user?.LLMProviderSettings[0].LLMProviderKey, user?.LLMProviderSettings[0].modelName as string);
+      provider = result.provider;
+      modelName = result.model;
+    }
+    
     if (!conversationId) {
       const { text } = await generateText({
         model: provider(modelName as string),

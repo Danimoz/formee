@@ -1,7 +1,7 @@
 export enum LLMProvider {
   OPENAI = "OpenAI",
   ANTHROPIC = "Anthropic",
-  OLLAMA = "Ollama",
+  GOOGLE = "Google",
 }
 
 export type AIFormSchema = {

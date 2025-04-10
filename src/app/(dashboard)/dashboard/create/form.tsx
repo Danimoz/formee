@@ -40,8 +40,6 @@ export default function CreateForm({ provider }: { provider?: string }) {
     }
   }
 
-  console.log('messages', messages)
-
   return (
     <>
       {messages?.length > 0 ? (
@@ -69,8 +67,8 @@ export default function CreateForm({ provider }: { provider?: string }) {
             
             {!provider && (
               <div className="flex justify-center items-center mt-4">
-                <Badge variant='destructive' className="text-base font-medium">
-                  Please go to the Settings Page to set up your API Key and Model, so you can use
+                <Badge variant='secondary' className="text-base font-medium">
+                  You can also use your API Key with it. Just go to the Settings Page and Add your API Key.
                 </Badge>
               </div>
             )}
