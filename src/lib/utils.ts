@@ -51,20 +51,31 @@ export function getBaseUrl() {
 export function buildZodSchema(fields: AIFormField[]) {
   const zodSchema: Record<string, any> = {};
   fields.forEach((field) => {
-    let validator = z.string();
-    if (field.type === "email") {
-      validator = z.string().email("Invalid email address");
+    let validator: z.ZodTypeAny;
+
+    // Handle different field types
+    switch (field.type) {
+      case "email":
+        validator = z.string().email("Invalid email address");
+        break;
+      case "checkbox":
+        validator = z.boolean();
+        break;
+      default:
+        validator = z.string();
     }
 
-    if (field.validations) {
+    if (field.validations && field.type !== "checkbox") {
       const { minLength, maxLength, pattern } = field.validations;
-      if (minLength) validator = validator.min(minLength, `Min ${minLength} characters`);
-      if (maxLength) validator = validator.max(maxLength, `Max ${maxLength} characters`);
-      if (pattern) validator = validator.regex(new RegExp(pattern), "Invalid format");
+      if (minLength) validator = (validator as z.ZodString).min(minLength, `Min ${minLength} characters`);
+      if (maxLength) validator = (validator as z.ZodString).max(maxLength, `Max ${maxLength} characters`);
+      if (pattern) validator = (validator as z.ZodString).regex(new RegExp(pattern), "Invalid format");
     }
 
     if (field.required) {
-      zodSchema[field.id] = validator.nonempty(`${field.label} is required`);
+      zodSchema[field.id] = field.type === "checkbox" 
+        ? validator
+        : (validator as z.ZodString).min(1, `${field.label} is required`);
     } else {
       zodSchema[field.id] = validator.optional();
     }
