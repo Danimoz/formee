@@ -32,26 +32,6 @@ export default function ChatInput({ value, onChange, onEnter, placeholder, class
     }
   }
 
-  const handlePaste = useCallback((e: React.ClipboardEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const text = e.clipboardData.getData('text/plain');
-
-    const selection = window.getSelection();
-    if (!selection?.rangeCount) return;
-
-    const range = selection.getRangeAt(0);
-    range.deleteContents();
-
-    const textNode = document.createTextNode(text);
-    range.insertNode(textNode);
-
-    // Move the cursor after the inserted text
-    range.setStartAfter(textNode);
-    range.setEndAfter(textNode);
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }, []);
-
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault(); // Prevent default behavior.
@@ -86,7 +66,6 @@ export default function ChatInput({ value, onChange, onEnter, placeholder, class
         ref={divRef}
         contentEditable
         onInput={handleInput}
-        onPaste={handlePaste}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
         className={cn(
