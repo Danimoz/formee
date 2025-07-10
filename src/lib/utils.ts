@@ -83,4 +83,21 @@ export function buildZodSchema(fields: AIFormField[]) {
   return z.object(zodSchema);
 }
 
+
+export function removeCommafromDate(date: Date): string {
+  const dateParts = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).formatToParts(date);
+
+  // Filter out literal parts that are commas or whitespace
+  return dateParts
+    .filter(part => part.type !== "literal" || !part.value.includes(','))
+    .map(part => part.value)
+    .join(' ');
+}
+
 export const swrFetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then((res) => res.json())

@@ -2,6 +2,8 @@
 
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { removeCommafromDate } from "@/lib/utils"
+import { Prisma } from "@prisma/client"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(
@@ -36,8 +38,10 @@ export async function GET(
     }
 
     // Extract field names from form schema
-    const formFields = form.fields as any[]
-    const fieldNames = formFields.map(field => field.name || field.label || field.id)
+    const formFields = form.fields as Prisma.JsonObject
+    const formSections = (formFields?.sections || []) as Array<{ fields: any[] }>
+    const fields = formSections.flatMap(section => section.fields || [])
+    const fieldNames = fields?.map(field => field.id)
 
     // Create CSV headers
     const headers = ["Response ID", "Submitted At", ...fieldNames]
@@ -49,13 +53,7 @@ export async function GET(
         const responseData = response.response as Record<string, any>
         const row = [
           response.id,
-          new Intl.DateTimeFormat("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          }).format(response.createdAt),
+          removeCommafromDate(response.createdAt),
           ...fieldNames.map(fieldName => {
             const value = responseData[fieldName] || ""
             // Escape commas and quotes in CSV
