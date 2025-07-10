@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { prisma } from "@/lib/prisma"
-import { ChevronLeft } from "lucide-react"
+import { ChevronLeft, Download } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
@@ -15,7 +15,7 @@ interface PageProps {
 export default async function FormResponses({ params }: PageProps) {
   const session = await auth()
   if (!session) redirect('/login')
-  
+
   const { formId } = await params
 
   const responses = await prisma.formResponse.findMany({
@@ -23,14 +23,14 @@ export default async function FormResponses({ params }: PageProps) {
   })
 
   const formatDate = (date: Date) => {
-      return new Intl.DateTimeFormat("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      }).format(date)
-    }
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date)
+  }
 
   return (
     <>
@@ -46,35 +46,49 @@ export default async function FormResponses({ params }: PageProps) {
         </div>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>All Responses</CardTitle>
+            {responses.length > 0 && (
+              <Link href={`/api/forms/${formId}/responses/csv`}>
+                <Button variant="outline" size="sm">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download CSV
+                </Button>
+              </Link>
+            )}
           </CardHeader>
           <CardContent>
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[100px]">ID</TableHead>
-                    <TableHead>SUBMITTED AT</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {responses.map((response) => (
-                    <TableRow key={response.id}>
-                      <TableCell className="font-medium">{response.id}</TableCell>
-                      <TableCell>{formatDate(response.createdAt)}</TableCell>
-                      <TableCell>
-                        <ResponseDialog response={response.response} />
-                      </TableCell>
+            {responses.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                No responses yet
+              </div>
+            ) : (
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[100px]">ID</TableHead>
+                      <TableHead>SUBMITTED AT</TableHead>
+                      <TableHead></TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {responses.map((response) => (
+                      <TableRow key={response.id}>
+                        <TableCell className="font-medium">{response.id}</TableCell>
+                        <TableCell>{formatDate(response.createdAt)}</TableCell>
+                        <TableCell>
+                          <ResponseDialog response={response.response} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </CardContent>
         </Card>
       </section>
-    </>  
+    </>
   )
 }
